@@ -1,4 +1,4 @@
 Channel Lister
 ==
 
-Service for listing IPTV channel uris in a m3u format for IPTV players
+Service for listing IPTV channel in a m3u format for IPTV players
