@@ -28,8 +28,8 @@ public class ChannelController {
     public String getChannels(@RequestParam(name = "name", required = false, defaultValue = "Stranger") String name) {
         StringBuilder response = new StringBuilder(RESPONSE_START);
         providers.forEach(provider -> {
-            response.append(provider.provide());
             response.append(RESPONSE_SEPARATOR);
+            response.append(provider.provide());
         });
         return response.toString();
     }
