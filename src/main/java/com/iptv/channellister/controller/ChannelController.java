@@ -2,14 +2,17 @@ package com.iptv.channellister.controller;
 
 import com.iptv.channellister.provider.ChannelProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController
+@Controller
 public class ChannelController {
 
     private static final String RESPONSE_START     = "#EXTM3U\n";
@@ -23,7 +26,17 @@ public class ChannelController {
         this.providers = providers;
     }
 
-    @GetMapping(value = "/", produces = {RESPONSE_TYPE})
+    @GetMapping(value = "/player/{tvDesc}")
+    public String getPlayer(@PathVariable(value = "tvDesc") String tvDesc, Model model) {
+        final Optional<String> srcUrl = providers.parallelStream()
+                                                 .map(provider -> provider.provide(tvDesc))
+                                                 .filter(link -> !link.isEmpty())
+                                                 .findAny();
+        srcUrl.ifPresent(s -> model.addAttribute("srcUrl", s));
+        return "player";
+    }
+
+    @GetMapping(value = "/playlist.m3u", produces = {RESPONSE_TYPE})
     @ResponseBody
     public String getChannels(@RequestParam(name = "name", required = false, defaultValue = "Stranger") String name) {
         StringBuilder response = new StringBuilder(RESPONSE_START);

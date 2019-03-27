@@ -12,7 +12,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -48,7 +47,7 @@ public class TelewebionProvider implements ChannelProvider {
         StringBuilder channels = new StringBuilder();
         Map<String, String> channelMap = TELEWEBION_CHANNELS.parallelStream()
                                                             .collect(Collectors.toMap(Function.identity(),
-                                                                                      this::getChannelLinks));
+                                                                                      this::getChannelLink));
         TELEWEBION_CHANNELS.forEach(channel -> {
             channels.append("#EXTINF:-1,");
             channels.append(channel);
@@ -59,7 +58,15 @@ public class TelewebionProvider implements ChannelProvider {
         return channels.toString();
     }
 
-    private String getChannelLinks(final String channelDesc) {
+    @Override
+    public String provide(final String tvDesc) {
+        if(TELEWEBION_CHANNELS.contains(tvDesc)){
+            return getChannelLink(tvDesc);
+        }
+        return "";
+    }
+
+    private String getChannelLink(final String channelDesc) {
         try {
             Response<JsonNode> response = client.getChannelLinks(channelDesc, "desktop", 4)
                              .execute();

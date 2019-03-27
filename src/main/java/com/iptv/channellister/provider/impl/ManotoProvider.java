@@ -29,6 +29,14 @@ public class ManotoProvider implements ChannelProvider {
                 "\n";
     }
 
+    @Override
+    public String provide(final String tvDesc) {
+        if(tvDesc.equals("manoto")){
+            return getChannelLink();
+        }
+        return "";
+    }
+
     private String getChannelLink() {
         Request request = new Request.Builder()
                 .url(MANOTO_API_URL)

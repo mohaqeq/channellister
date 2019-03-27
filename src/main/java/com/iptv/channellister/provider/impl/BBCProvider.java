@@ -29,6 +29,14 @@ public class BBCProvider implements ChannelProvider {
                 "\n";
     }
 
+    @Override
+    public String provide(final String tvDesc) {
+        if(tvDesc.equals("bbc")){
+            return getChannelLink();
+        }
+        return "";
+    }
+
     private String getChannelLink() {
         Request request = new Request.Builder()
                 .url(BBC_API_URL)

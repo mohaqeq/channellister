@@ -40,4 +40,9 @@ public class IribLiveProvider implements ChannelProvider {
     public String provide() {
         return "";
     }
+
+    @Override
+    public String provide(final String tvDesc) {
+        return "";
+    }
 }
