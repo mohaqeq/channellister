@@ -60,7 +60,7 @@ public class TelewebionProvider implements ChannelProvider {
 
     @Override
     public String provide(final String tvDesc) {
-        if(TELEWEBION_CHANNELS.contains(tvDesc)){
+        if (TELEWEBION_CHANNELS.contains(tvDesc)) {
             return getChannelLink(tvDesc);
         }
         return "";
@@ -69,7 +69,7 @@ public class TelewebionProvider implements ChannelProvider {
     private String getChannelLink(final String channelDesc) {
         try {
             Response<JsonNode> response = client.getChannelLinks(channelDesc, "mobile", 4)
-                             .execute();
+                                                .execute();
             if (response != null && response.isSuccessful()) {
                 JsonNode maxLink = StreamSupport.stream(response.body().get("data").get(0).get("links").spliterator(), false)
                                                 .max(Comparator.comparingInt(link -> link.get("bitrate").asInt()))

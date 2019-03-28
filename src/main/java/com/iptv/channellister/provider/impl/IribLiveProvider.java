@@ -6,7 +6,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class IribLiveProvider implements ChannelProvider {
 
     @Override
     public String provide(final String tvDesc) {
-        if(IRIB_CHANNELS_MAP.containsKey(tvDesc)){
+        if (IRIB_CHANNELS_MAP.containsKey(tvDesc)) {
             return getChannelLink(IRIB_CHANNELS_MAP.get(tvDesc));
         }
         return "";
