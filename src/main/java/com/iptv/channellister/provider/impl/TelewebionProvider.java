@@ -68,14 +68,14 @@ public class TelewebionProvider implements ChannelProvider {
 
     private String getChannelLink(final String channelDesc) {
         try {
-            Response<JsonNode> response = client.getChannelLinks(channelDesc, "mobile", 4)
+            Response<JsonNode> response = client.getChannelLinks(channelDesc, "desktop", 4)
                                                 .execute();
             if (response != null && response.isSuccessful()) {
                 JsonNode maxLink = StreamSupport.stream(response.body().get("data").get(0).get("links").spliterator(), false)
                                                 .max(Comparator.comparingInt(link -> link.get("bitrate").asInt()))
                                                 .get();
 
-                return maxLink.get("link").asText();
+                return maxLink.get("link").asText().replaceFirst("^https://([^/]*)/", "http://channellister.herokuapp.com/telewebion/");
             }
         } catch (Exception e) {
             logger.debug("Error in fetching channels", e);
