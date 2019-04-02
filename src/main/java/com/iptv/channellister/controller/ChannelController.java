@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +41,9 @@ public class ChannelController {
     @ResponseBody
     public String getChannels(@RequestParam(name = "name", required = false, defaultValue = "Stranger") String name) {
         StringBuilder response = new StringBuilder(RESPONSE_START);
-        providers.forEach(provider -> {
+        providers.stream()
+                 .sorted(Comparator.comparingInt(ChannelProvider::getOrder))
+                 .forEach(provider -> {
             response.append(RESPONSE_SEPARATOR);
             response.append(provider.provide());
         });

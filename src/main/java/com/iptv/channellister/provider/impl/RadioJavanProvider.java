@@ -4,6 +4,7 @@ import com.iptv.channellister.provider.ChannelProvider;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,14 @@ public class RadioJavanProvider implements ChannelProvider {
 
     public RadioJavanProvider() {
         logger = LoggerFactory.getLogger(RadioJavanProvider.class);
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder().addInterceptor(new HttpLoggingInterceptor()
+                                                                   .setLevel(HttpLoggingInterceptor.Level.BODY))
+                                           .build();
     }
 
     @Override
     public String provide() {
-        return "#EXTINF:-1,radiojavan" +
+        return "#EXTINF:-1 tvg-name=\"Radio Javan\" group-title=\"External\",RADIOJAVAN" +
                 "\n" +
                 getChannelLink() +
                 "\n";
@@ -35,6 +38,11 @@ public class RadioJavanProvider implements ChannelProvider {
             return getChannelLink();
         }
         return "";
+    }
+
+    @Override
+    public int getOrder() {
+        return 103;
     }
 
     private String getChannelLink() {

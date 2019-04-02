@@ -4,6 +4,7 @@ import com.iptv.channellister.provider.ChannelProvider;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,14 @@ public class BBCProvider implements ChannelProvider {
 
     public BBCProvider() {
         logger = LoggerFactory.getLogger(BBCProvider.class);
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder().addInterceptor(new HttpLoggingInterceptor()
+                                                                   .setLevel(HttpLoggingInterceptor.Level.BODY))
+                                           .build();
     }
 
     @Override
     public String provide() {
-        return "#EXTINF:-1,bbc" +
+        return "#EXTINF:-1 tvg-name=\"BBC\" group-title=\"External\",BBC" +
                 "\n" +
                 getChannelLink() +
                 "\n";
@@ -35,6 +38,11 @@ public class BBCProvider implements ChannelProvider {
             return getChannelLink();
         }
         return "";
+    }
+
+    @Override
+    public int getOrder() {
+        return 102;
     }
 
     private String getChannelLink() {

@@ -10,3 +10,7 @@ charon:
       path: /telewebion
       destinations: https://sa11.telewebion.com #, https://sl11.telewebion.com, https://sa3.telewebion.com, https://st2.telewebion.com
       retryable: true
+
+spring:
+  main:
+    banner-mode: "off"

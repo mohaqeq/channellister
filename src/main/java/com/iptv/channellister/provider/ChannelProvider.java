@@ -5,4 +5,6 @@ public interface ChannelProvider {
     String provide();
 
     String provide(String tvDesc);
+
+    int getOrder();
 }

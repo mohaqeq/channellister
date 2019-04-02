@@ -4,6 +4,7 @@ import com.iptv.channellister.provider.ChannelProvider;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,9 @@ public class IribLiveProvider implements ChannelProvider {
 
     public IribLiveProvider() {
         logger = LoggerFactory.getLogger(BBCProvider.class);
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder().addInterceptor(new HttpLoggingInterceptor()
+                                                                   .setLevel(HttpLoggingInterceptor.Level.BODY))
+                                           .build();
     }
 
     @Override
@@ -57,8 +60,8 @@ public class IribLiveProvider implements ChannelProvider {
                                                           .collect(Collectors.toMap(Function.identity(), key ->
                                                                   getChannelLink(IRIB_CHANNELS_MAP.get(key))));
         IRIB_CHANNELS_MAP.keySet().forEach(channel -> {
-            channels.append("#EXTINF:-1,");
-            channels.append(channel);
+            channels.append("#EXTINF:-1, group-title=\"Internal\"");
+            channels.append(channel.toUpperCase());
             channels.append("\n");
             channels.append(channelMap.get(channel));
             channels.append("\n");
@@ -72,6 +75,11 @@ public class IribLiveProvider implements ChannelProvider {
             return getChannelLink(IRIB_CHANNELS_MAP.get(tvDesc));
         }
         return "";
+    }
+
+    @Override
+    public int getOrder() {
+        return 300;
     }
 
     private String getChannelLink(String pageLink) {
