@@ -3,7 +3,6 @@ package com.iptv.channellister.provider.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iptv.channellister.provider.ChannelProvider;
-import javafx.util.Pair;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -24,42 +23,42 @@ import java.util.stream.StreamSupport;
 public class TelewebionProvider implements ChannelProvider {
 
     private static final String                     TELEWEBION_API_URL  = "https://wa1.telewebion.com/v2/channels/getChannelLinks?device=desktop&channel_desc=";
-    private static       List<Pair<String, String>> TELEWEBION_CHANNELS = new ArrayList<Pair<String, String>>() {{
-        add(new Pair<>("tv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv1.png"));
-        add(new Pair<>("tv2", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv2.png"));
-        add(new Pair<>("tv3", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv3.png"));
-        add(new Pair<>("tv4", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv4.png"));
-        add(new Pair<>("tehran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tehran.png"));
-        add(new Pair<>("irinn", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/irinn.png"));
-        add(new Pair<>("shijam", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shijam.png"));
-        add(new Pair<>("nasim", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/nasim.png"));
-        add(new Pair<>("shinama", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shinama.png"));
-        add(new Pair<>("varzesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/varzesh.png"));
-        add(new Pair<>("pooya", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/pooya.png"));
-        add(new Pair<>("ifilm", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/ifilm.png"));
-        add(new Pair<>("shinamak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shinamak.png"));
-        add(new Pair<>("namayesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/namayesh.png"));
-        add(new Pair<>("sepehr", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/sepehr.png"));
-        add(new Pair<>("shiran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shiran.png"));
-        add(new Pair<>("mostanad", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/mostanad.png"));
-        add(new Pair<>("amouzesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/amouzesh.png"));
-        add(new Pair<>("quran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/quran.png"));
-        add(new Pair<>("salamat", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/salamat.png"));
-        add(new Pair<>("jjtv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/jjtv1.png"));
-        add(new Pair<>("hdtest", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/hdtest.png"));
-        add(new Pair<>("omid", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/omid.png"));
-        add(new Pair<>("ofogh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/ofogh.png"));
-        add(new Pair<>("shoma", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shoma.png"));
-        add(new Pair<>("esfahan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/esfahan.png"));
-        add(new Pair<>("sahand", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/sahand.png"));
-        add(new Pair<>("fars", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/fars.png"));
-        add(new Pair<>("khoozestan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/khoozestan.png"));
-        add(new Pair<>("khorasanrazavi", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/khorasanrazavi.png"));
-        add(new Pair<>("kordestan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/kordestan.png"));
-        add(new Pair<>("baran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/baran.png"));
-        add(new Pair<>("semnan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/semnan.png"));
-        add(new Pair<>("aftab", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aftab.png"));
-        //add(new Pair<>("aflak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aflak.png"));
+    private static       List<Map.Entry<String, String>> TELEWEBION_CHANNELS = new ArrayList<Map.Entry<String, String>>() {{
+        add(new HashMap.SimpleEntry<>("tv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv1.png"));
+        add(new HashMap.SimpleEntry<>("tv2", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv2.png"));
+        add(new HashMap.SimpleEntry<>("tv3", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv3.png"));
+        add(new HashMap.SimpleEntry<>("tv4", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv4.png"));
+        add(new HashMap.SimpleEntry<>("tehran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tehran.png"));
+        add(new HashMap.SimpleEntry<>("irinn", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/irinn.png"));
+        add(new HashMap.SimpleEntry<>("shijam", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shijam.png"));
+        add(new HashMap.SimpleEntry<>("nasim", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/nasim.png"));
+        add(new HashMap.SimpleEntry<>("shinama", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shinama.png"));
+        add(new HashMap.SimpleEntry<>("varzesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/varzesh.png"));
+        add(new HashMap.SimpleEntry<>("pooya", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/pooya.png"));
+        add(new HashMap.SimpleEntry<>("ifilm", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/ifilm.png"));
+        add(new HashMap.SimpleEntry<>("shinamak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shinamak.png"));
+        add(new HashMap.SimpleEntry<>("namayesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/namayesh.png"));
+        add(new HashMap.SimpleEntry<>("sepehr", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/sepehr.png"));
+        add(new HashMap.SimpleEntry<>("shiran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shiran.png"));
+        add(new HashMap.SimpleEntry<>("mostanad", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/mostanad.png"));
+        add(new HashMap.SimpleEntry<>("amouzesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/amouzesh.png"));
+        add(new HashMap.SimpleEntry<>("quran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/quran.png"));
+        add(new HashMap.SimpleEntry<>("salamat", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/salamat.png"));
+        add(new HashMap.SimpleEntry<>("jjtv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/jjtv1.png"));
+        add(new HashMap.SimpleEntry<>("hdtest", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/hdtest.png"));
+        add(new HashMap.SimpleEntry<>("omid", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/omid.png"));
+        add(new HashMap.SimpleEntry<>("ofogh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/ofogh.png"));
+        add(new HashMap.SimpleEntry<>("shoma", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shoma.png"));
+        add(new HashMap.SimpleEntry<>("esfahan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/esfahan.png"));
+        add(new HashMap.SimpleEntry<>("sahand", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/sahand.png"));
+        add(new HashMap.SimpleEntry<>("fars", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/fars.png"));
+        add(new HashMap.SimpleEntry<>("khoozestan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/khoozestan.png"));
+        add(new HashMap.SimpleEntry<>("khorasanrazavi", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/khorasanrazavi.png"));
+        add(new HashMap.SimpleEntry<>("kordestan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/kordestan.png"));
+        add(new HashMap.SimpleEntry<>("baran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/baran.png"));
+        add(new HashMap.SimpleEntry<>("semnan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/semnan.png"));
+        add(new HashMap.SimpleEntry<>("aftab", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aftab.png"));
+        //add(new HashMap.SimpleEntry<>("aflak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aflak.png"));
     }};
 
     private final Logger       logger;
@@ -78,7 +77,7 @@ public class TelewebionProvider implements ChannelProvider {
     public String provide() {
         StringBuilder channels = new StringBuilder();
         Map<String, String> channelMap = TELEWEBION_CHANNELS.parallelStream()
-                                                            .map(Pair::getKey)
+                                                            .map(Map.Entry::getKey)
                                                             .collect(Collectors.toMap(Function.identity(),
                                                                                       this::getChannelLink));
         TELEWEBION_CHANNELS.forEach(channel -> {
@@ -95,7 +94,7 @@ public class TelewebionProvider implements ChannelProvider {
 
     @Override
     public String provide(final String tvDesc) {
-        if (TELEWEBION_CHANNELS.stream().map(Pair::getKey).collect(Collectors.toList()).contains(tvDesc)) {
+        if (TELEWEBION_CHANNELS.stream().map(Map.Entry::getKey).collect(Collectors.toList()).contains(tvDesc)) {
             return getChannelLink(tvDesc);
         }
         return "";
