@@ -26,7 +26,7 @@ public class RadioJavanProvider implements ChannelProvider {
 
     @Override
     public String provide() {
-        return "#EXTINF:-1 tvg-name=\"Radio Javan\" group-title=\"External\",RADIOJAVAN" +
+        return "#EXTINF:-1 tvg-name=\"Radio Javan\" tvg-logo=\"https://www.radiojavan.com/images/nav_logo.png\" group-title=\"External\",RADIOJAVAN" +
                 "\n" +
                 getChannelLink() +
                 "\n";

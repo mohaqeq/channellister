@@ -26,7 +26,7 @@ public class ManotoProvider implements ChannelProvider {
 
     @Override
     public String provide() {
-        return "#EXTINF:-1 tvg-name=\"Manoto\" group-title=\"External\",MANOTO" +
+        return "#EXTINF:-1 tvg-name=\"Manoto\" tvg-logo=\"https://www.manototv.com/Content/Images/manoto-logo-0cb2b7.png\" group-title=\"External\",MANOTO" +
                 "\n" +
                 getChannelLink() +
                 "\n";

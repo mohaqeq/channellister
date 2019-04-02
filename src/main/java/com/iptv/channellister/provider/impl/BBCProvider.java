@@ -26,7 +26,7 @@ public class BBCProvider implements ChannelProvider {
 
     @Override
     public String provide() {
-        return "#EXTINF:-1 tvg-name=\"BBC\" group-title=\"External\",BBC" +
+        return "#EXTINF:-1 tvg-name=\"BBC\" tvg-logo=\"https://nav.files.bbci.co.uk/orbit/2.0.0-522.0b452914/img/blq-orbit-blocks_grey.svg\" group-title=\"External\",BBC" +
                 "\n" +
                 getChannelLink() +
                 "\n";
