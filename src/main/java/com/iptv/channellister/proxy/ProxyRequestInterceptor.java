@@ -30,7 +30,9 @@ public class ProxyRequestInterceptor implements ForwardedRequestInterceptor {
                 data.setUri(data.getUri().replaceFirst(matcher.group(1) + "/", ""));
                 mapping.setDestinations(Collections.singletonList(String.format(TELEWEBION_URL_FORMAT, matcher.group(1))));
             }
-            data.setHeaders(TELEWEBION_HEADERS);
+            final HttpHeaders headers = data.getHeaders();
+            headers.addAll(TELEWEBION_HEADERS);
+            data.setHeaders(headers);
         }
     }
 }
