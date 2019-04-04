@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BBCProvider implements ChannelProvider {
 
-    private static final String BBC_API_URL = "http://wsdownload.bbc.co.uk/persian/meta/live/smp/ptv_live.xml";
+    private static final String BBC_API_URL = "https://wsdownload.bbc.co.uk/persian/meta/live/smp/ptv_live.xml";
 
     private final Logger       logger;
     private final OkHttpClient client;
@@ -48,7 +48,7 @@ public class BBCProvider implements ChannelProvider {
     private String getChannelLink() {
         Request request = new Request.Builder()
                 .url(BBC_API_URL)
-                .addHeader("Referer", "http://emp.bbc.com")
+                .addHeader("Referer", "https://emp.bbc.com")
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (response != null && response.isSuccessful()) {
