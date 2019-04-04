@@ -5,10 +5,24 @@ logging.level:
   ROOT: INFO
 
 charon:
+  retrying:
+    max-attempts: 3 # Maximum number of HTTP request forward tries.
+    retry-on:
+      client-http-error: false # Flag for enabling and disabling triggering HTTP requests forward retries on 4xx HTTP responses from destination.
+      server-http-error: true # Flag for enabling and disabling triggering HTTP requests forward retries on 5xx HTTP responses from destination.
+      exceptions: java.lang.Exception # Comma-separated list of exceptions that triggers HTTP request forward retries.
+  asynchronous-forwarding-thread-pool:
+    queue-capacity: 50 # Thread pool executor queue capacity.
+    size:
+      initial: 5 # Thread pool executor initial number of threads.
+      maximum: 30 # Thread pool executor maximum number of threads.
+  tracing:
+    enabled: false
   mappings:
     - name: telewebion
       path: /telewebion
-      destinations: https://sa11.telewebion.com #, https://sl11.telewebion.com, https://sa3.telewebion.com, https://st2.telewebion.com
+      destinations: https://sa3.telewebion.com
+      asynchronous: false
       retryable: true
 
 spring:
