@@ -63,8 +63,8 @@ public class TelewebionProvider implements ChannelProvider {
                 //add(new HashMap.SimpleEntry<>("aflak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aflak.png"));
             }};
     private static final String                          REVERSE_PROXY_REGEX       = "^https://([^.]*)\\.([^/]*)/";
-    //private static final String                          REVERSE_PROXY_REPLACEMENT = "http://localhost/telewebion/$1/";
-    private static final String                          REVERSE_PROXY_REPLACEMENT = "https://channellister.herokuapp.com/telewebion/$1/";
+    private static final String                          REVERSE_PROXY_REPLACEMENT = "http://localhost/telewebion/$1/";
+    //private static final String                          REVERSE_PROXY_REPLACEMENT = "https://channellister.herokuapp.com/telewebion/$1/";
 
     private final Logger       logger;
     private final OkHttpClient client;

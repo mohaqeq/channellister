@@ -26,5 +26,5 @@ charon:
       retryable: true
 
 spring:
-  main:
-    banner-mode: "off"
+  banner:
+    location: banner.txt
