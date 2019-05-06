@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -63,7 +64,7 @@ public class TelewebionProvider implements ChannelProvider {
                 add(new HashMap.SimpleEntry<>("aftab", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aftab.png"));
                 //add(new HashMap.SimpleEntry<>("aflak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aflak.png"));
             }};
-    private static final String                          REVERSE_PROXY_REGEX = "^https://([^.]*)\\.([^/]*)/";
+    private static final Pattern                         REVERSE_PROXY_REGEX_PATTERN = Pattern.compile("^https://([^.]*)\\.([^/]*)/");
 
     private final Logger       logger;
     private final OkHttpClient client;
@@ -124,7 +125,7 @@ public class TelewebionProvider implements ChannelProvider {
                 final JsonNode maxLink = StreamSupport.stream(body.get("data").get(0).get("links").spliterator(), false)
                                                       .max(Comparator.comparingInt(link -> link.get("bitrate").asInt()))
                                                       .get();
-                return maxLink.get("link").asText().replaceFirst(REVERSE_PROXY_REGEX, channellisterProxyUrl);
+                return REVERSE_PROXY_REGEX_PATTERN.matcher(maxLink.get("link").asText()).replaceFirst(channellisterProxyUrl);
             }
         } catch (Exception e) {
             logger.debug("Error in fetching channel link", e);
