@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,9 +23,9 @@ import java.util.stream.StreamSupport;
 @Service
 public class TelewebionProvider implements ChannelProvider {
 
-    private static final String                          TELEWEBION_URL            = "https://www.telewebion.com";
-    private static final String                          TELEWEBION_API_URL        = "https://wa1.telewebion.com/v2/channels/getChannelLinks?device=desktop&channel_desc=";
-    private static final List<Map.Entry<String, String>> TELEWEBION_CHANNELS       =
+    private static final String                          TELEWEBION_URL      = "https://www.telewebion.com";
+    private static final String                          TELEWEBION_API_URL  = "https://wa1.telewebion.com/v2/channels/getChannelLinks?device=desktop&channel_desc=";
+    private static final List<Map.Entry<String, String>> TELEWEBION_CHANNELS =
             new ArrayList<Map.Entry<String, String>>() {{
                 add(new HashMap.SimpleEntry<>("tv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv1.png"));
                 add(new HashMap.SimpleEntry<>("tv2", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv2.png"));
@@ -62,13 +63,14 @@ public class TelewebionProvider implements ChannelProvider {
                 add(new HashMap.SimpleEntry<>("aftab", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aftab.png"));
                 //add(new HashMap.SimpleEntry<>("aflak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aflak.png"));
             }};
-    private static final String                          REVERSE_PROXY_REGEX       = "^https://([^.]*)\\.([^/]*)/";
-    //private static final String                          REVERSE_PROXY_REPLACEMENT = "http://localhost/telewebion/$1/";
-    private static final String                          REVERSE_PROXY_REPLACEMENT = "https://channellister.herokuapp.com/telewebion/$1/";
+    private static final String                          REVERSE_PROXY_REGEX = "^https://([^.]*)\\.([^/]*)/";
 
     private final Logger       logger;
     private final OkHttpClient client;
     private final ObjectMapper objectMapper;
+
+    @Value("${cl.proxy.url.tw:http://localhost/telewebion/$1/}")
+    private String channellisterProxyUrl;
 
     public TelewebionProvider() {
         objectMapper = new ObjectMapper();
@@ -122,7 +124,7 @@ public class TelewebionProvider implements ChannelProvider {
                 final JsonNode maxLink = StreamSupport.stream(body.get("data").get(0).get("links").spliterator(), false)
                                                       .max(Comparator.comparingInt(link -> link.get("bitrate").asInt()))
                                                       .get();
-                return maxLink.get("link").asText().replaceFirst(REVERSE_PROXY_REGEX, REVERSE_PROXY_REPLACEMENT);
+                return maxLink.get("link").asText().replaceFirst(REVERSE_PROXY_REGEX, channellisterProxyUrl);
             }
         } catch (Exception e) {
             logger.debug("Error in fetching channel link", e);
