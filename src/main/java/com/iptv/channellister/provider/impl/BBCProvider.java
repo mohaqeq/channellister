@@ -33,8 +33,8 @@ public class BBCProvider implements ChannelProvider {
     }
 
     @Override
-    public String provide(final String tvDesc) {
-        if (tvDesc.equals("bbc")) {
+    public String provide(final String channelName) {
+        if (channelName.equals("bbc")) {
             return getChannelLink();
         }
         return "";

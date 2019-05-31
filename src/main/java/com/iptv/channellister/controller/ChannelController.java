@@ -44,9 +44,9 @@ public class ChannelController {
         providers.stream()
                  .sorted(Comparator.comparingInt(ChannelProvider::getOrder))
                  .forEach(provider -> {
-            response.append(RESPONSE_SEPARATOR);
-            response.append(provider.provide());
-        });
+                     response.append(RESPONSE_SEPARATOR);
+                     response.append(provider.provide());
+                 });
         return response.toString();
     }
 }

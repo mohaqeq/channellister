@@ -9,108 +9,81 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.iptv.channellister.proxy.ProxyRequestInterceptor.REVERSE_PROXY_REGEX_PATTERN;
+
 @Service
+@ConfigurationProperties("telewebion")
 public class TelewebionProvider implements ChannelProvider {
 
-    private static final String                          TELEWEBION_URL      = "https://www.telewebion.com";
-    private static final String                          TELEWEBION_API_URL  = "https://wa1.telewebion.com/v2/channels/getChannelLinks?device=desktop&channel_desc=";
-    private static final List<Map.Entry<String, String>> TELEWEBION_CHANNELS =
-            new ArrayList<Map.Entry<String, String>>() {{
-                add(new HashMap.SimpleEntry<>("tv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv1.png"));
-                add(new HashMap.SimpleEntry<>("tv2", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv2.png"));
-                add(new HashMap.SimpleEntry<>("tv3", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv3.png"));
-                add(new HashMap.SimpleEntry<>("tv4", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tv4.png"));
-                add(new HashMap.SimpleEntry<>("tehran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/tehran.png"));
-                add(new HashMap.SimpleEntry<>("irinn", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/irinn.png"));
-                add(new HashMap.SimpleEntry<>("shijam", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shijam.png"));
-                add(new HashMap.SimpleEntry<>("nasim", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/nasim.png"));
-                add(new HashMap.SimpleEntry<>("shinama", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shinama.png"));
-                add(new HashMap.SimpleEntry<>("varzesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/varzesh.png"));
-                add(new HashMap.SimpleEntry<>("pooya", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/pooya.png"));
-                add(new HashMap.SimpleEntry<>("ifilm", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/ifilm.png"));
-                add(new HashMap.SimpleEntry<>("shinamak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shinamak.png"));
-                add(new HashMap.SimpleEntry<>("namayesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/namayesh.png"));
-                add(new HashMap.SimpleEntry<>("sepehr", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/sepehr.png"));
-                add(new HashMap.SimpleEntry<>("shiran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shiran.png"));
-                add(new HashMap.SimpleEntry<>("mostanad", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/mostanad.png"));
-                add(new HashMap.SimpleEntry<>("amouzesh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/amouzesh.png"));
-                add(new HashMap.SimpleEntry<>("quran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/quran.png"));
-                add(new HashMap.SimpleEntry<>("salamat", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/salamat.png"));
-                add(new HashMap.SimpleEntry<>("jjtv1", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/jjtv1.png"));
-                add(new HashMap.SimpleEntry<>("hdtest", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/hdtest.png"));
-                add(new HashMap.SimpleEntry<>("omid", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/omid.png"));
-                add(new HashMap.SimpleEntry<>("ofogh", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/ofogh.png"));
-                add(new HashMap.SimpleEntry<>("shoma", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/shoma.png"));
-                add(new HashMap.SimpleEntry<>("esfahan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/esfahan.png"));
-                add(new HashMap.SimpleEntry<>("sahand", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/sahand.png"));
-                add(new HashMap.SimpleEntry<>("fars", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/fars.png"));
-                add(new HashMap.SimpleEntry<>("khoozestan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/khoozestan.png"));
-                add(new HashMap.SimpleEntry<>("khorasanrazavi", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/khorasanrazavi.png"));
-                add(new HashMap.SimpleEntry<>("kordestan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/kordestan.png"));
-                add(new HashMap.SimpleEntry<>("baran", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/baran.png"));
-                add(new HashMap.SimpleEntry<>("semnan", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/semnan.png"));
-                add(new HashMap.SimpleEntry<>("aftab", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aftab.png"));
-                //add(new HashMap.SimpleEntry<>("aflak", "https://static.televebion.net/web/content_images/channel_images/thumbs/new/240/v4/aflak.png"));
-            }};
-    private static final Pattern                         REVERSE_PROXY_REGEX_PATTERN = Pattern.compile("^https://([^.]*)\\.([^/]*)/");
+    private static final String TELEWEBION_URL       = "https://www.telewebion.com";
+    private static final String TELEWEBION_API_URL   = "https://wa1.telewebion.com/v2/channels/getChannelLinks?device=desktop&channel_desc=";
+    private static final String TELEWEBION_PROXY_URL = "/telewebion/$1/";
 
     private final Logger       logger;
     private final OkHttpClient client;
     private final ObjectMapper objectMapper;
 
-    @Value("${cl.proxy.url.tw:http://localhost/telewebion/$1/}")
-    private String channellisterProxyUrl;
+    private String        proxyUrl;
+    private List<Channel> channels = new ArrayList<>();
 
-    public TelewebionProvider() {
+    public TelewebionProvider(@Value("${root.url:http://localhost}") String rootUrl) {
         objectMapper = new ObjectMapper();
         logger = LoggerFactory.getLogger(TelewebionProvider.class);
         client = new OkHttpClient.Builder().addInterceptor(new HttpLoggingInterceptor()
                                                                    .setLevel(HttpLoggingInterceptor.Level.BODY))
                                            .build();
+        proxyUrl = rootUrl + TELEWEBION_PROXY_URL;
+    }
+
+    public List<Channel> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(final List<Channel> channels) {
+        this.channels = channels;
     }
 
     @Override
     public String provide() {
-        StringBuilder channels = new StringBuilder();
-        Map<String, String> channelMap = TELEWEBION_CHANNELS.parallelStream()
-                                                            .map(Map.Entry::getKey)
-                                                            .collect(Collectors.toMap(Function.identity(),
-                                                                                      this::getChannelLink));
-        TELEWEBION_CHANNELS.forEach(channel -> {
-            channels.append("#EXTINF:-1 group-title=\"Internal\" tvg-logo=\"");
-            channels.append(channel.getValue());
-            channels.append("\",");
-            channels.append(channel.getKey().toUpperCase());
-            channels.append("\n");
-            channels.append(channelMap.get(channel.getKey()));
-            channels.append("\n");
+        StringBuilder channelsBuilder = new StringBuilder();
+        Map<String, String> channelMap = channels.parallelStream()
+                                                 .map(Channel::getName)
+                                                 .collect(Collectors.toMap(Function.identity(),
+                                                                           this::getChannelLink));
+        channels.forEach(channel -> {
+            channelsBuilder.append("#EXTINF:-1 group-title=\"Telewebion\" tvg-logo=\"");
+            channelsBuilder.append(channel.getLogo());
+            channelsBuilder.append("\",");
+            channelsBuilder.append(channel.getName().toUpperCase());
+            channelsBuilder.append("\n");
+            channelsBuilder.append(channelMap.get(channel.getName()));
+            channelsBuilder.append("\n");
         });
-        return channels.toString();
+        return channelsBuilder.toString();
     }
 
     @Override
-    public String provide(final String tvDesc) {
-        if (TELEWEBION_CHANNELS.stream().map(Map.Entry::getKey).collect(Collectors.toList()).contains(tvDesc)) {
-            return getChannelLink(tvDesc);
+    public String provide(final String channelName) {
+        if (channels.stream().map(Channel::getName).collect(Collectors.toList()).contains(channelName)) {
+            return getChannelLink(channelName);
         }
         return "";
     }
 
     @Override
     public int getOrder() {
-        return 200;
+        return 300;
     }
 
     private String getChannelLink(final String channelDesc) {
@@ -125,11 +98,33 @@ public class TelewebionProvider implements ChannelProvider {
                 final JsonNode maxLink = StreamSupport.stream(body.get("data").get(0).get("links").spliterator(), false)
                                                       .max(Comparator.comparingInt(link -> link.get("bitrate").asInt()))
                                                       .get();
-                return REVERSE_PROXY_REGEX_PATTERN.matcher(maxLink.get("link").asText()).replaceFirst(channellisterProxyUrl);
+                return REVERSE_PROXY_REGEX_PATTERN.matcher(maxLink.get("link").asText()).replaceFirst(proxyUrl);
             }
         } catch (Exception e) {
             logger.debug("Error in fetching channel link", e);
         }
         return "";
+    }
+
+    public static class Channel {
+
+        private String name;
+        private String logo;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public String getLogo() {
+            return logo;
+        }
+
+        public void setLogo(final String logo) {
+            this.logo = logo;
+        }
     }
 }

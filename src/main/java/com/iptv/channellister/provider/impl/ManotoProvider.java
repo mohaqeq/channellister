@@ -33,8 +33,8 @@ public class ManotoProvider implements ChannelProvider {
     }
 
     @Override
-    public String provide(final String tvDesc) {
-        if (tvDesc.equals("manoto")) {
+    public String provide(final String channelName) {
+        if (channelName.equals("manoto")) {
             return getChannelLink();
         }
         return "";

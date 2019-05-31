@@ -33,8 +33,8 @@ public class RadioJavanProvider implements ChannelProvider {
     }
 
     @Override
-    public String provide(final String tvDesc) {
-        if (tvDesc.equals("radiojavan")) {
+    public String provide(final String channelName) {
+        if (channelName.equals("radiojavan")) {
             return getChannelLink();
         }
         return "";

@@ -7,79 +7,72 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-//@Service()
+@Service
+@ConfigurationProperties("irib")
 public class IribLiveProvider implements ChannelProvider {
-
-    private static Map<String, String> IRIB_CHANNELS_MAP = new HashMap<String, String>() {{
-        put("tv1", "http://live.irib.ir/?idc=C0&idb=TV&nol=123487");
-        put("tv2", "http://live.irib.ir/?idc=C0&idb=TV&nol=123488");
-        put("tv3", "http://live.irib.ir/?idc=C0&idb=TV&nol=123489");
-        put("tv4", "http://live.irib.ir/?idc=C0&idb=TV&nol=123490");
-        put("tv5", "http://live.irib.ir/?idc=C0&idb=TV&nol=123491");
-        put("irinn", "http://live.irib.ir/?idc=C0&idb=TV&nol=123492");
-        put("amouzesh", "http://live.irib.ir/?idc=C0&idb=TV&nol=123493");
-        put("quran", "http://live.irib.ir/?idc=C0&idb=TV&nol=123494");
-        put("mostanad", "http://live.irib.ir/?idc=C0&idb=TV&nol=123495");
-        put("namayesh", "http://live.irib.ir/?idc=C0&idb=TV&nol=123498");
-        put("ofogh", "http://live.irib.ir/?idc=C0&idb=TV&nol=123499");
-        put("varzesh", "http://live.irib.ir/?idc=C0&idb=TV&nol=123503");
-        put("pouya", "http://live.irib.ir/?idc=C0&idb=TV&nol=123485");
-        put("salamat", "http://live.irib.ir/?idc=C0&idb=TV&nol=123504");
-        put("nasim", "http://live.irib.ir/?idc=C0&idb=TV&nol=123505");
-        put("tamasha", "http://live.irib.ir/?idc=C0&idb=TV&nol=123525");
-        put("omid-tv", "http://live.irib.ir/?idc=C0&idb=TV&nol=123560");
-        put("shoma", "http://live.irib.ir/?idc=C0&idb=TV&nol=123496");
-        put("iran-kala", "http://live.irib.ir/?idc=C0&idb=TV&nol=123497");
-        put("shinamak", "http://live.irib.ir/?idc=C0&idb=TV&nol=123657");
-        put("shinama", "http://live.irib.ir/?idc=C0&idb=TV&nol=123615");
-        put("shiran", "http://live.irib.ir/?idc=C0&idb=TV&nol=123652");
-        put("shijam", "http://live.irib.ir/?idc=C0&idb=TV&nol=123658");
-    }};
 
     private final Logger       logger;
     private final OkHttpClient client;
 
-    public IribLiveProvider() {
+    private String        proxyUrl;
+    private List<Channel> channels;
+
+    public IribLiveProvider(@Value("${root.url:http://localhost}") String rootUrl) {
         logger = LoggerFactory.getLogger(BBCProvider.class);
         client = new OkHttpClient.Builder().addInterceptor(new HttpLoggingInterceptor()
                                                                    .setLevel(HttpLoggingInterceptor.Level.BODY))
                                            .build();
+        proxyUrl = rootUrl + "/irib";
+    }
+
+    public List<Channel> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(final List<Channel> channels) {
+        this.channels = channels;
     }
 
     @Override
     public String provide() {
-        StringBuilder channels = new StringBuilder();
-        Map<String, String> channelMap = IRIB_CHANNELS_MAP.keySet()
-                                                          .parallelStream()
-                                                          .collect(Collectors.toMap(Function.identity(), key ->
-                                                                  getChannelLink(IRIB_CHANNELS_MAP.get(key))));
-        IRIB_CHANNELS_MAP.keySet().forEach(channel -> {
-            channels.append("#EXTINF:-1, group-title=\"Internal\"");
-            channels.append(channel.toUpperCase());
-            channels.append("\n");
-            channels.append(channelMap.get(channel));
-            channels.append("\n");
+        StringBuilder channelsBuilder = new StringBuilder();
+        Map<String, String> channelMap = channels.parallelStream()
+                                                 .collect(Collectors.toMap(Channel::getName,
+                                                                           channel -> getChannelLink(channel.getAddress())
+                                                 ));
+        channels.forEach(channel -> {
+            channelsBuilder.append("#EXTINF:-1, group-title=\"IRIB\" tvg-logo=\"");
+            channelsBuilder.append(channel.getLogo());
+            channelsBuilder.append("\",");
+            channelsBuilder.append(channel.getName().toUpperCase());
+            channelsBuilder.append("\n");
+            channelsBuilder.append(channelMap.get(channel.getName()));
+            channelsBuilder.append("\n");
         });
-        return channels.toString();
+        return channelsBuilder.toString();
     }
 
     @Override
-    public String provide(final String tvDesc) {
-        if (IRIB_CHANNELS_MAP.containsKey(tvDesc)) {
-            return getChannelLink(IRIB_CHANNELS_MAP.get(tvDesc));
-        }
-        return "";
+    public String provide(final String channelName) {
+        Optional<Channel> channel = channels.stream()
+                                            .filter(ch -> ch.getName().equals(channelName))
+                                            .findAny();
+        return channel.map(value -> getChannelLink(value.getAddress()))
+                      .orElse("");
     }
 
     @Override
     public int getOrder() {
-        return 300;
+        return 200;
     }
 
     private String getChannelLink(String pageLink) {
@@ -92,11 +85,42 @@ public class IribLiveProvider implements ChannelProvider {
                 final int playerUrlIndex = body.indexOf("LiveUrl");
                 final int startQuotIndex = body.indexOf("'", playerUrlIndex) + 1;
                 final int endQuotIndex = body.indexOf("'", startQuotIndex + 1);
-                return body.substring(startQuotIndex, endQuotIndex);
+                return body.substring(startQuotIndex, endQuotIndex).replace("http://cdnlive.irib.ir", proxyUrl);
             }
         } catch (Exception e) {
             logger.debug("Error in fetching channel link", e);
         }
         return "";
+    }
+
+    public static class Channel {
+
+        private String name;
+        private String address;
+        private String logo;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(final String address) {
+            this.address = address;
+        }
+
+        public String getLogo() {
+            return logo;
+        }
+
+        public void setLogo(final String logo) {
+            this.logo = logo;
+        }
     }
 }
