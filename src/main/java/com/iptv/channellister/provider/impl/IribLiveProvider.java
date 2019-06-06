@@ -50,7 +50,7 @@ public class IribLiveProvider implements ChannelProvider {
                                                                            channel -> getChannelLink(channel.getAddress())
                                                  ));
         channels.forEach(channel -> {
-            channelsBuilder.append("#EXTINF:-1, group-title=\"IRIB\" tvg-logo=\"");
+            channelsBuilder.append("#EXTINF:-1 group-title=\"IRIB\" tvg-logo=\"");
             channelsBuilder.append(channel.getLogo());
             channelsBuilder.append("\",");
             channelsBuilder.append(channel.getName().toUpperCase());
